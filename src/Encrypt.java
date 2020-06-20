@@ -1,27 +1,53 @@
 import java.util.Scanner;
 
-class Encrypt {
-    private static final int SHIFT = 25;
+public class Encrypt {
+    private static final String ENC = "enc";
+    private static final String DEC = "enc";
+
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
+        String command = scanner.nextLine();
         String inputText = scanner.nextLine();
         int key = scanner.nextInt();
 
-        char[] input = inputText.toCharArray();
-
-        for(int i = 0; i < input.length; i++) {
-            char letter = inputText.charAt(i);
-            if(letter >= 'a' && letter <= 'z') {
-                letter = (char) (letter + key);
-                if(letter > 'z') {
-                    letter = (char)(letter - 26);
-                }
-                input[i] = letter;
-            }
+        // Variable to store the modified string
+        String result = "";
+        // Take action based on command
+        if(command.equals(ENC)) {
+            // Encrypt the text
+            result = encrypt(inputText, key);
+        } else {
+            // Decrypt the text
+            result = decrypt(inputText, key);
         }
 
-        //System.out.println(sample);
-        inputText = new String(input);
-        System.out.println(inputText);
+        System.out.println(result);
+    }
+
+    private static String encrypt(String text, int key) {
+        char[] cipher = text.toCharArray();
+
+        // Decrypt the text using key
+        for(int i = 0; i < cipher.length; i++) {
+            char letter = text.charAt(i);
+            letter = (char) (letter + key);
+            cipher[i] = letter;
+        }
+        // Return the changed string
+        return new String(cipher);
+    }
+
+    private static String decrypt(String text, int key) {
+        char[] cipher = text.toCharArray();
+
+        // Decrypt the text using key
+        for(int i = 0; i < cipher.length; i++) {
+            char letter = text.charAt(i);
+            letter = (char) (letter - key);
+            cipher[i] = letter;
+        }
+        // Return the changed string
+        return new String(cipher);
     }
 }
