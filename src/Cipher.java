@@ -1,15 +1,33 @@
+
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
-public class Encrypt {
+public class Cipher {
     private static final String ENC = "enc";
-    private static final String DEC = "enc";
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
-        String command = scanner.nextLine();
-        String inputText = scanner.nextLine();
-        int key = scanner.nextInt();
+        String command = ENC;
+        String inputText = "";
+        int key = 0;
+
+        List<String> info = Arrays.asList(args);
+
+        // If mode is specified
+        if(info.contains("-mode")) {
+            command = info.get(info.indexOf("-mode") + 1);
+        }
+        // Check if key is specified
+        if(info.contains("-key")) {
+            key = Integer.parseInt(info.get(info.indexOf("-key") + 1));
+        }
+        // Check if string is specified
+        if(info.contains("-data")) {
+            inputText = info.get(info.indexOf("-data") + 1);
+        }
+
 
         // Variable to store the modified string
         String result = "";
