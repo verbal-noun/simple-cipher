@@ -1,11 +1,11 @@
-
-
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 public class Cipher {
     private static final String ENC = "enc";
+    private static final String DEC = "enc";
 
     public static void main(String[] args) {
 
@@ -23,9 +23,20 @@ public class Cipher {
         if(info.contains("-key")) {
             key = Integer.parseInt(info.get(info.indexOf("-key") + 1));
         }
-        // Check if string is specified
+        // Check if data is specified
         if(info.contains("-data")) {
+            // data mode is used
             inputText = info.get(info.indexOf("-data") + 1);
+        } else if (info.contains("-in")) {
+            // Read the data from the file
+            File file = new File(info.get(info.indexOf("-in") + 1));
+            try {
+                Scanner scanner = new Scanner(file);
+                inputText = scanner.nextLine();
+                scanner.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
 
@@ -40,7 +51,32 @@ public class Cipher {
             result = decrypt(inputText, key);
         }
 
-        System.out.println(result);
+        if(info.contains("-out")) {
+            File file = new File(info.get(info.indexOf("-out") + 1));
+            try {
+                // Create output file
+                if(file.createNewFile()) {
+                    // Write result onto file
+                    FileWriter fileWriter = new FileWriter(file);
+                    PrintWriter printWriter = new PrintWriter(fileWriter);
+                    printWriter.print(result);
+                    printWriter.close();
+                } else {
+                    // Open existing file
+                    FileWriter fileWriter = new FileWriter(file);
+                    PrintWriter printWriter = new PrintWriter(fileWriter);
+                    printWriter.print(result);
+                    printWriter.close();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Print to standard output
+            System.out.println(result);
+        }
+
     }
 
     private static String encrypt(String text, int key) {
