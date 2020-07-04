@@ -3,7 +3,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-public class Cipher {
+public class Main {
     private static final String ENC = "enc";
     private static final String DEC = "enc";
 
@@ -12,17 +12,19 @@ public class Cipher {
         String command = ENC;
         String inputText = "";
         int key = 0;
-
+        Algorithm algorithm = new Shift();;
         List<String> info = Arrays.asList(args);
 
         // If mode is specified
         if(info.contains("-mode")) {
             command = info.get(info.indexOf("-mode") + 1);
         }
+
         // Check if key is specified
         if(info.contains("-key")) {
             key = Integer.parseInt(info.get(info.indexOf("-key") + 1));
         }
+
         // Check if data is specified
         if(info.contains("-data")) {
             // data mode is used
@@ -39,16 +41,26 @@ public class Cipher {
             }
         }
 
+        // Check if algorithm is specified or not
+        if(info.contains("-alg")) {
+            String algoType = info.get(info.indexOf("-alg") + 1);
+            if(algoType.equals("shift")) {
+                algorithm = new Shift();
+            } else if (algoType.equals("unicode")) {
+                algorithm = new Unicode();
+            }
+        }
 
+        // Modify the the string according to the algorithm and arguments
         // Variable to store the modified string
         String result = "";
         // Take action based on command
         if(command.equals(ENC)) {
             // Encrypt the text
-            result = encrypt(inputText, key);
+            result = algorithm.encrypt(inputText, key);
         } else {
             // Decrypt the text
-            result = decrypt(inputText, key);
+            result = algorithm.decrypt(inputText, key);
         }
 
         if(info.contains("-out")) {
@@ -56,13 +68,13 @@ public class Cipher {
             try {
                 // Create output file
                 if(file.createNewFile()) {
+
                     // Write result onto file
                     FileWriter fileWriter = new FileWriter(file);
                     PrintWriter printWriter = new PrintWriter(fileWriter);
                     printWriter.print(result);
                     printWriter.close();
                 } else {
-                    // Open existing file
                     FileWriter fileWriter = new FileWriter(file);
                     PrintWriter printWriter = new PrintWriter(fileWriter);
                     printWriter.print(result);
@@ -79,29 +91,4 @@ public class Cipher {
 
     }
 
-    private static String encrypt(String text, int key) {
-        char[] cipher = text.toCharArray();
-
-        // Decrypt the text using key
-        for(int i = 0; i < cipher.length; i++) {
-            char letter = text.charAt(i);
-            letter = (char) (letter + key);
-            cipher[i] = letter;
-        }
-        // Return the changed string
-        return new String(cipher);
-    }
-
-    private static String decrypt(String text, int key) {
-        char[] cipher = text.toCharArray();
-
-        // Decrypt the text using key
-        for(int i = 0; i < cipher.length; i++) {
-            char letter = text.charAt(i);
-            letter = (char) (letter - key);
-            cipher[i] = letter;
-        }
-        // Return the changed string
-        return new String(cipher);
-    }
 }
